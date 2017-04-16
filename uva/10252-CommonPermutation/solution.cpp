@@ -20,8 +20,10 @@ bool isinbf(bloomfilter &bf, char c) {
   return bf[hash(c)];
 }
 
-void getpermutation(bloomfilter &bf ,string &s, string &perm) {
-  
+void getpermutation(bloomfilter &bf ,string &s, vector<char> &perm) {
+  for (string::iterator it = s.begin(); it != s.end(); ++it)
+    If (isinbf(bf, *it))
+      perm.push_back(*it);
 }
 
 void printbf(bloomfilter &bf) {
@@ -30,10 +32,33 @@ void printbf(bloomfilter &bf) {
   cout << endl;
 }
 
-int main() {
+void test() {
   bloomfilter bf(ALPHABETSIZESIZE, false);
-  string s("abc");
-  buildbf(bf, s);
+  string s0("walking");
+  string s1("women");
+  buildbf(bf, s0);
   printbf(bf);
+  vector<char> perm;
+  getpermutation(bf, s1, perm);
+  sort(perm);
+  cout << string(perm) << endl;
+}
+
+int main() {
+  test();
+  string s0;
+  while(getline(cin, s0)) {
+    string s1;
+    getline(cin, other);
+
+    bloomfilter bf(ALPHABETSIZESIZE, false);
+    buildbf(bf, s0);
+    printbf(bf);
+    vector<char> perm;
+    getpermutation(bf, s1, perm);
+    sort(perm);
+    cout << string(perm) << endl;
+  }
+
   return 0;
 }
