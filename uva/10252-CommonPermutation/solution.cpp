@@ -1,63 +1,63 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
+#include <sstream>
 
 using namespace std;
 
 const int ALPHABETSIZESIZE = 26;
-typedef vector<bool> bloomfilter;
+typedef vector<bool> bset;
 
-int hash(char c) {
+int bsethash(char c) {
   return c - 'a';
 }
 
-void buildbf(bloomfilter &bf, string &s) {
+void buildbset(bset &bs, string &s) {
   for (string::iterator it = s.begin(); it != s.end(); ++it)
-    bf[hash(*it)] = true;
+    bs[bsethash(*it)] = true;
 }
 
-bool isinbf(bloomfilter &bf, char c) {
-  return bf[hash(c)];
+bool isinbset(bset &bs, char c) {
+  return bs[bsethash(c)];
 }
 
-void getpermutation(bloomfilter &bf ,string &s, vector<char> &perm) {
+void getpermutation(bset &bs ,string &s, stringstream &perm) {
+  bset alreadyin(ALPHABETSIZESIZE, false);
   for (string::iterator it = s.begin(); it != s.end(); ++it)
-    If (isinbf(bf, *it))
-      perm.push_back(*it);
+    if (isinbset(bs, *it) &&
+        !isinbset(alreadyin, *it)) {
+      perm << (*it);
+      alreadyin[bsethash(*it)] = true;
+    }
 }
 
-void printbf(bloomfilter &bf) {
-  for (bloomfilter::iterator it = bf.begin(); it != bf.end(); ++it)
+void printbset(bset &bs) {
+  for (bset::iterator it = bs.begin(); it != bs.end(); ++it)
     cout << " " << *it;
   cout << endl;
 }
 
-void test() {
-  bloomfilter bf(ALPHABETSIZESIZE, false);
-  string s0("walking");
-  string s1("women");
-  buildbf(bf, s0);
-  printbf(bf);
-  vector<char> perm;
-  getpermutation(bf, s1, perm);
-  sort(perm);
-  cout << string(perm) << endl;
+void printperm(string &s0, string &s1) {
+  bset bs(ALPHABETSIZESIZE, false);
+  buildbset(bs, s0);
+  printbset(bs);
+  stringstream permstream;
+  getpermutation(bs, s1, permstream);
+  string perm = permstream.str();
+  sort(perm.begin(), perm.end());
+  cout << perm << endl;
 }
 
 int main() {
-  test();
-  string s0;
-  while(getline(cin, s0)) {
-    string s1;
-    getline(cin, other);
+  string s0("women");
+  string s1("walking");
+    
+  printperm(s0, s1);
 
-    bloomfilter bf(ALPHABETSIZESIZE, false);
-    buildbf(bf, s0);
-    printbf(bf);
-    vector<char> perm;
-    getpermutation(bf, s1, perm);
-    sort(perm);
-    cout << string(perm) << endl;
+  while(getline(cin, s0)) {
+    getline(cin, s1);
+    printperm(s0, s1);
   }
 
   return 0;
