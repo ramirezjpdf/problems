@@ -7,7 +7,7 @@
 using namespace std;
 
 const int ALPHABETSIZESIZE = 26;
-typedef vector<bool> bset;
+typedef vector<int> bset;
 
 int bsethash(char c) {
   return c - 'a';
@@ -15,20 +15,21 @@ int bsethash(char c) {
 
 void buildbset(bset &bs, string &s) {
   for (string::iterator it = s.begin(); it != s.end(); ++it)
-    bs[bsethash(*it)] = true;
+    bs[bsethash(*it)] += 1;
 }
 
 bool isinbset(bset &bs, char c) {
-  return bs[bsethash(c)];
+  if (bs[bsethash(c)] > 0) {
+    bs[bsethash(c)] -= 1;
+	return true;
+  }
+  return false;
 }
 
 void getpermutation(bset &bs ,string &s, stringstream &perm) {
-  bset alreadyin(ALPHABETSIZESIZE, false);
   for (string::iterator it = s.begin(); it != s.end(); ++it)
-    if (isinbset(bs, *it) &&
-        !isinbset(alreadyin, *it)) {
+    if (isinbset(bs, *it)) {
       perm << (*it);
-      alreadyin[bsethash(*it)] = true;
     }
 }
 
@@ -39,9 +40,8 @@ void printbset(bset &bs) {
 }
 
 void printperm(string &s0, string &s1) {
-  bset bs(ALPHABETSIZESIZE, false);
+  bset bs(ALPHABETSIZESIZE, 0);
   buildbset(bs, s0);
-  printbset(bs);
   stringstream permstream;
   getpermutation(bs, s1, permstream);
   string perm = permstream.str();
@@ -50,13 +50,14 @@ void printperm(string &s0, string &s1) {
 }
 
 int main() {
-  string s0("women");
-  string s1("walking");
-    
-  printperm(s0, s1);
-
+  string s0;
+  string s1;
   while(getline(cin, s0)) {
     getline(cin, s1);
+	if (*(s0.end() - 1) == '\r')
+	  s0.erase(s0.end() - 1);
+	if (*(s1.end() - 1) == '\r')
+	  s1.erase(s1.end() - 1);
     printperm(s0, s1);
   }
 
